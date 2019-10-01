@@ -1,4 +1,4 @@
-package ch1
+package gifdemo
 
 import (
 	"image"
@@ -7,8 +7,6 @@ import (
 	"io"
 	"math"
 	"math/rand"
-	"os"
-	"time"
 )
 
 var palette = []color.Color{
@@ -25,21 +23,23 @@ const (
 	grennIndex = 2
 )
 
-func main() {
-	rand.Seed(time.Now().UTC().UnixNano())
-	file, _ := os.OpenFile("./gopl/ch1/ch1.4/out.gif", os.O_WRONLY|os.O_CREATE, 0666)
-	lissajous(file)
-}
+//func main() {
+//	rand.Seed(time.Now().UTC().UnixNano())
+//	file, _ := os.OpenFile("./gopl/ch1/ch1.4/out.gif", os.O_WRONLY|os.O_CREATE, 0666)
+//	lissajous(file)
+//}
 
-func lissajous(out io.Writer) {
+func Lissajous(out io.Writer, cyc int) {
+	cycles := 5
 	const (
-		cycles  = 5
 		res     = 0.001
 		size    = 100
 		nframes = 64
 		delay   = 8
 	)
-
+	if cyc > 0 {
+		cycles = cyc
+	}
 	freq := rand.Float64() * 3.0
 	anim := gif.GIF{LoopCount: nframes}
 	phase := 0.0
@@ -47,7 +47,7 @@ func lissajous(out io.Writer) {
 		rect := image.Rect(0, 0, 2*size+1, 2*size+1)
 		img := image.NewPaletted(rect, palette)
 
-		for t := 0.0; t < cycles*3*math.Pi; t += res {
+		for t := 0.0; t < float64(cycles)*3*math.Pi; t += res {
 			x := math.Sin(t)
 			y := math.Sin(t*freq + phase)
 			img.SetColorIndex(size+int(x*size+0.5),
